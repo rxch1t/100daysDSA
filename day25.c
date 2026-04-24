@@ -32,61 +32,41 @@ Explanation: There is no cycle in the linked list.
 
 #include <stdio.h>
 #include <stdlib.h>
-struct ListNode{
+struct Node{
     int val;
-    struct ListNode* next;
+    struct Node* next;
 };
+struct Node* detectCycle(struct Node* head){
+    struct Node* slow=head;
+    struct Node* fast=head;
+    while(fast && fast->next){
+        slow=slow->next;
+        fast=fast->next->next;
 
-struct ListNode* createList(int arr[],int size){
-    struct ListNode* head=NULL;
-    struct ListNode* temp=NULL;
-    for(int i=0;i<size;i++){
-        struct ListNode* newNode=(struct ListNode*)malloc(sizeof(struct ListNode));
-        newNode->val=arr[i];
-        newNode->next=NULL;
-        if(head==NULL){
-            head=newNode;
-            temp=newNode;
-        }else{
-            temp->next=newNode;
-            temp=newNode;
-        }
-    }
-    return head;
-}
-struct ListNode* detectCycle(struct ListNode* head){
-    struct ListNode* visited[1000];
-    int k=0;
+        if(slow==fast){
+            slow=head;
 
-    while(head){
-        for(int i=0;i<k;i++){
-        if(visited[i]==head) return head;
+            while(slow!=fast){
+                slow=slow->next;
+                fast=fast->next;
+            }
+            return slow;
         }
-        visited[k++]=head;
-        head=head->next;
     }
     return NULL;
 }
-
 int main(){
-    int arr[]={3,2,0,-4};
-    int size=4;
-    struct ListNode* head=createList(arr,size);
-    struct ListNode* temp=head;
-    struct ListNode* connect=NULL;
-    int idx=0;
-
-    while(temp->next){
-        if(idx==1) connect=temp;
-        temp=temp->next;
-        idx++;
-    }
-    temp->next=connect;
-    struct ListNode* ans=detectCycle(head);
-    if(ans){
-    printf("%d",ans->val);
-    }else{
-     printf("no cycle");
-    }
+    struct Node* a=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* b=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* c=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* d=(struct Node*)malloc(sizeof(struct Node));
+    a->val=3; b->val=2; c->val=0; d->val=-4;
+    a->next=b;
+    b->next=c;
+    c->next=d;
+    d->next=b;  
+    struct Node* res=detectCycle(a);
+    if(res) printf("%d",res->val);
+    else printf("no cycle");
     return 0;
 }
