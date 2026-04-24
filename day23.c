@@ -28,60 +28,35 @@ Explanation: There is a cycle in the linked list, where the tail connects to the
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-
-struct ListNode{
+struct Node{
     int val;
-    struct ListNode* next;
+    struct Node* next;
 };
-
-struct ListNode* createList(int arr[],int size){
-    struct ListNode* head=NULL;
-    struct ListNode* temp=NULL;
-    for(int i=0;i<size;i++){
-        struct ListNode* newNode=(struct ListNode*)malloc(sizeof(struct ListNode));
-        newNode->val=arr[i];
-        newNode->next=NULL;
-        if(head==NULL){
-            head=newNode;
-            temp=newNode;
-        }else{
-            temp->next=newNode;
-            temp=newNode;
-        }
+int hasCycle(struct Node* head){
+    struct Node* slow=head;
+    struct Node* fast=head;
+    while(fast && fast->next){
+        slow=slow->next;
+        fast=fast->next->next;
+        if(slow==fast) return 1;
     }
-    return head;
+    return 0;
 }
-
-bool hasCycle(struct ListNode* head){
-    struct ListNode* visited[1000];
-    int k=0;
-    while(head){
-        for(int i=0;i<k;i++){
-        if(visited[i]==head) 
-        return true;
-        }
-        visited[k++]=head;
-        head=head->next;
-    }
-    return false;
-}
-
 int main(){
-    int arr[]={3,2,0,-4};
-    int size=4;
-    struct ListNode* head=createList(arr,size);
-    struct ListNode* temp=head;
-    struct ListNode* connect=NULL;
-    int idx=0;
-    while(temp->next){
-        if(idx==1) connect=temp;
-        temp=temp->next;
-        idx++;
-    }
-    temp->next=connect;
-    if(hasCycle(head)) printf("true");
+    struct Node* a=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* b=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* c=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* d=(struct Node*)malloc(sizeof(struct Node));
+    a->val=3; b->val=2; c->val=0; d->val=-4;
+    a->next=b;
+    b->next=c;
+    c->next=d;
+    d->next=b;
+    if(hasCycle(a)) printf("true");
     else printf("false");
+    return 0;
+}
+
 
     return 0;
 }
