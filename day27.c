@@ -24,59 +24,45 @@ Given the head of a singly linked list, the task is to remove a cycle if present
 */
 
 
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-
 struct Node{
     int val;
     struct Node* next;
 };
-
-struct Node* create(int arr[],int n){
-    struct Node* head=NULL;
-    struct Node* temp=NULL;
-
-    for(int i=0;i<n;i++){
-        struct Node* node=(struct Node*)malloc(sizeof(struct Node));
-        node->val=arr[i];
-        node->next=NULL;
-
-        if(head==NULL){
-            head=node;
-            temp=node;
-        }else{
-            temp->next=node;
-            temp=node;
-        }
-    }
-    return head;
-}
-
-bool removeCycle(struct Node* head){
-    struct Node* visited[1000];
-    int k=0;
-
-    struct Node* prev=NULL;
-
-    while(head){
-        for(int i=0;i<k;i++){
-            if(visited[i]==head){
-                if(prev) prev->next=NULL;
-                return true;
+int removeCycle(struct Node* head){
+    struct Node* slow=head;
+    struct Node* fast=head;
+    while(fast && fast->next){
+        slow=slow->next;
+        fast=fast->next->next;
+        if(slow==fast){
+            slow=head;
+            while(slow!=fast){
+                slow=slow->next;
+                fast=fast->next;
             }
+            struct Node* temp=fast;
+            while(temp->next!=fast){
+                temp=temp->next;
+            }
+            temp->next=NULL;
+            return 1;
         }
-        visited[k++]=head;
-        prev=head;
-        head=head->next;
     }
-    return false;
+    return 0;
 }
-
 int main(){
-    printf("Problem: Level Order\\n");
+    struct Node* a=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* b=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* c=(struct Node*)malloc(sizeof(struct Node));
+    struct Node* d=(struct Node*)malloc(sizeof(struct Node));
+    a->val=1; b->val=2; c->val=3; d->val=4;
+    a->next=b;
+    b->next=c;
+    c->next=d;
+    d->next=b;
+    if(removeCycle(a)) printf("true");
+    else printf("false");
     return 0;
 }
